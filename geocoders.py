@@ -66,7 +66,8 @@ class GoogleGeoCoder():
     def geocode(self, address):
 
         if self.api_key is not None and self.api_key.replace(' ', '') != '':
-            url += self.url + '&key=' + self.api_key
+            url = self.url + '&key=' + self.api_key #unreferenced variable url
+            print(url)
         else:
             url = self.url
 
