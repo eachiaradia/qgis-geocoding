@@ -21,6 +21,8 @@ import sys, os
 
 
 # Import the PyQt and QGIS libraries
+from .geocoding_provider import GeoCodingProvider
+
 try:
     from qgis.core import Qgis, QgsMessageLog
     from PyQt5.QtCore import *
@@ -57,6 +59,9 @@ class GeoCoding:
         # store layer id
         self.layerid = ''
         self.layer = None
+        
+        # add processing provider
+        self.GCProvider = GeoCodingProvider()
         
 
     def logMessage(self, msg):
@@ -95,6 +100,9 @@ class GeoCoding:
         # read config
         self.config = QgsSettings()
         self.previous_map_tool = self.iface.mapCanvas().mapTool()
+        
+        # Init procesing provider
+        QgsApplication.processingRegistry().addProvider(self.GCProvider)
 
 
     def unload(self):
@@ -106,6 +114,9 @@ class GeoCoding:
         self.iface.removeToolBarIcon(self.action)
         if self.previous_map_tool:
             self.iface.mapCanvas().setMapTool(self.previous_map_tool)
+            
+        # unload provider            
+        QgsApplication.processingRegistry().removeProvider(self.GCProvider)
 
     def config(self):
         # create and show the dialog
